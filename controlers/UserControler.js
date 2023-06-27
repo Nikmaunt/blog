@@ -1,4 +1,3 @@
-import registerValidation from "../validations.js";
 import {validationResult} from "express-validator";
 import bcrypt from "bcrypt";
 import UserSchema from "../models/user.js";
