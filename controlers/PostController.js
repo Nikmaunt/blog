@@ -48,6 +48,7 @@ export const getOne = async (req, res) => {
         });
     }
 };
+
 export const remove = async (req, res) => {
     try {
         const postId = req.params.id
@@ -73,3 +74,26 @@ export const remove = async (req, res) => {
     }
 
 };
+
+export const update = async (req, res) => {
+    try {
+        const postId = req.params.id;
+        await PostSchema.updateOne(
+            {_id: postId},
+            {
+                title: req.body.title,
+                text: req.body.text,
+                imageUrl: req.body.imageUrl,
+                tags: req.body.tags,
+                user: req.userId,
+            }
+        )
+            .then(doc => res.json({success: true}))
+            .catch(err => res.status(500).json({message: "Post not found"}));
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            message: 'Unable to update post',
+        });
+    }
+}
