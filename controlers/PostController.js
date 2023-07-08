@@ -7,7 +7,7 @@ export const create = async (req, res) => {
             title: req.body.title,
             text: req.body.text,
             imageUrl: req.body.imageUrl,
-            tags: req.body.tags,
+            tags: req.body.tags.split(','),
             user: req.userId,
         });
 
@@ -18,6 +18,23 @@ export const create = async (req, res) => {
         console.log(err);
         res.status(500).json({
             message: 'Unable to create post',
+        });
+    }
+};
+
+export const getLastTags = async (req, res) => {
+    try {
+        const post = await PostSchema.find().limit(5).exec();
+
+        const tags = post.map((obj)=> obj.tags)
+            .flat()
+            .slice(0,5)
+
+        res.json(tags);
+    } catch (err) {
+        console.log(err);
+        res.status(404).json({
+            message: 'Unable to get post',
         });
     }
 };
@@ -38,7 +55,7 @@ export const getOne = async (req, res) => {
     try {
         const postId = req.params.id
         PostSchema.findOneAndUpdate(
-            {_id: postId}, {$inc: {viewsCount: 1}}, {returnDocument: "After"})
+            {_id: postId}, {$inc: {viewsCount: 1}}, {returnDocument: "After"}).populate('user')
             .then(doc => res.json(doc))
             .catch(err => res.status(500).json({message: "Post not found"}))
     } catch (err) {

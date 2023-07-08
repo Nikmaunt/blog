@@ -40,7 +40,7 @@ export const login = async (req, res) => {
     try {
         const user = await UserSchema.findOne({email: req.body.email})
         if (!user) {
-            return req.status(404).json({
+            return res.status(404).json({
                 message: 'User not found'
             })
         }
